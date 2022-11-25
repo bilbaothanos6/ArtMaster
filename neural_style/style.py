@@ -15,7 +15,7 @@ from transformer_net import TransformerNet
 from vgg import Vgg16
 import streamlit as st
 
-device = torch.device('mps' if torch.mps.is_available() else 'cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 @st.cache
 def load_model(model_path):
@@ -26,7 +26,7 @@ def load_model(model_path):
         for i in list(state_dict.keys()):
             if re.search(r'in\d+\.running_(mean|var)$', i):
                 del state_dict[i]
-            style_model.load_state_dict(state_dict)
+            style_model.load_state_dict(state_dict, strict=False)
             style_model.to(device)
             style_model.eval()
             return style_model
